@@ -16,7 +16,6 @@ def get_db_connection():
 
 # Function to get a post using its ID
 
-
 def get_post(post_id):
     global connection_count
     connection = get_db_connection()
@@ -96,9 +95,9 @@ def create():
 
 # Returns the health of TechTrends application
 
-
+## Gets the health of the system
 @app.route('/healthz')
-def healthcheck():
+def healthcheck():  
     response = app.response_class(
         response=json.dumps({"result": "OK - healthy"}),
         status=200,
@@ -109,22 +108,25 @@ def healthcheck():
     return response
 
 
+## Gets the metrics of the system
 @app.route('/metrics')
 def metrics():
     global connection_count
+    
     connection = get_db_connection()
     connection_count += 1
-    posts_count = connection.execute(
-        'SELECT COUNT(*) FROM posts').fetchone()[0]
+    
+    posts_count = connection.execute('SELECT COUNT(*) FROM posts').fetchone()[0]
     connection.close()
     connection_count -= 1
 
     response = app.response_class(
         response=json.dumps(
             {"db_connection_count": connection_count, "post_count": posts_count}),
-        status=200,
-        mimetype='application/json'
+            status=200,
+            mimetype='application/json'
     )
+    
     app.logger.info('Metrics request successful.')
     return response
 

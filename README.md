@@ -1,2 +1,3 @@
-# udacity-techtrends-app
-udacity project for tech trends
+## Screenshots 
+
+Place any project screenshots in this directory.

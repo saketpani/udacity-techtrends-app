@@ -31,13 +31,13 @@ jobs:
         uses: docker/login-action@v1 
         with:
           username: saketpani
-          password: SPTekas@1975
+          password: dckr_pat_cmTjp0E8Y1fGCLOOJvm8Ti6nK1k
       -
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: ./techtrends/Dockerfile
+          context: ./techtrends
+          file: ./Dockerfile
           platforms: linux/amd64
           push: true
           tags: saketpani/techtrends:latest

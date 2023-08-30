@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"C:/Course/Udacity/CloudNative/udacity-techtrends-app","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

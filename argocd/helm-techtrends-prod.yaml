@@ -13,5 +13,5 @@ spec:
       valueFiles:
         - values-prod.yaml
     path: helm
-    repoURL: https://github.com/saketpani/techtrends
+    repoURL: https://github.com/saketpani/udacity-techtrends-app
     targetRevision: HEAD

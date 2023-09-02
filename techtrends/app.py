@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
 from werkzeug.exceptions import abort
@@ -52,7 +53,7 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-        app.logger.error('The post with post_id {} is not found.'.format(str(post_id)))
+        app.logger.exception('The post with post_id {} is not found.'.format(str(post_id)))
         return render_template('404.html'), 404
     else:
         app.logger.info('Article {} retrieved!'.format(post['title']))
@@ -62,7 +63,7 @@ def post(post_id):
 
 
 @app.route('/about')
-def about():
+def about():    
     app.logger.info('About Us page request successful.')
     return render_template('about.html')
 
@@ -112,14 +113,16 @@ def healthcheck():
 @app.route('/metrics')
 def metrics():
     global connection_count
-    
     connection = get_db_connection()
-    connection_count += 1
-    
-    posts_count = connection.execute('SELECT COUNT(*) FROM posts').fetchone()[0]
-    connection.close()
-    connection_count -= 1
-
+    connection_count += 1          
+    try:          
+        posts_count = connection.execute('SELECT COUNT(*) FROM posts').fetchone()[0]
+        connection.close()
+        connection_count -= 1
+    except sqlite3.Error as ex:
+        app.logger.exception("Error in executing query")
+        app.logger.exception(' '.join(ex.args))
+        
     response = app.response_class(
         response=json.dumps(
             {"db_connection_count": connection_count, "post_count": posts_count}),
@@ -133,6 +136,11 @@ def metrics():
 
 # start the application on port 3111
 if __name__ == "__main__":
-    logging.basicConfig(
-        format='%(levelname)s:%(module)s:%(asctime)s, %(message)s', level=logging.INFO)
+    # set logger to handle STDOUT and STDERR 
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stderr_handler = logging.StreamHandler(sys.stderr)
+    handlers = [stdout_handler, stderr_handler]    
+    log_format = '%(levelname)s:%(module)s:%(asctime)s, %(message)s'           
+    logging.basicConfig(format=log_format, level=logging.DEBUG, handlers=handlers)
+            
     app.run(host='0.0.0.0', port='3111')

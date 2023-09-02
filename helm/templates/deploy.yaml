@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: techtrends    
-  name: techtrends
-  namespace: sandbox
+    app: {{.Values.appname}}    
+  name: {{.Values.appname}}
+  namespace: {{.Values.namespace.name}}
 spec:
-  replicas: 1
+  replicas: {{.Values.replicaCount}}
   selector:
     matchLabels:
-      app: techtrends      
+      app: {{.Values.appname}}      
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -18,27 +18,27 @@ spec:
   template:
     metadata:
       labels:
-        app: techtrends 
+        app: {{.Values.appname}} 
     spec:
       containers:
-      - image: saketpani/techtrends:latest
-        imagePullPolicy: IfNotPresent
-        name: techtrends
+      - image: {{ .Values.image.dockerRegistry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{.Values.image.imagePullPolicy}}
+        name: {{.Values.appname}} 
         ports:
-            - containerPort: 3111
+            - containerPort: {{.Values.containerPort}}
               protocol: TCP
         livenessProbe:
           httpGet:
-            path: /healthz
-            port: 3111
+            path: {{.Values.livenessProbe.path}}
+            port: {{.Values.livenessProbe.port}}
         readinessProbe:
           httpGet:
-            path: /healthz
-            port: 3111
+            path: {{.Values.readinessProbe.path}}
+            port: {{.Values.readinessProbe.port}}
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "250m"
+            memory: 128Mi
+            cpu: 350m
           limits:
-            memory: "128Mi"
-            cpu: "500m"
+            memory: 256Mi
+            cpu: 500m

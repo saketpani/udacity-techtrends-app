@@ -1,0 +1,8 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+db.sqlite3
+
+# Distribution / packaging
+.Python
+.venv/
